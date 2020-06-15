@@ -1,0 +1,10 @@
+black
+pylint
+numpy
+opencv-python
+pillow
+h5py
+shapely
+scikit-image
+tqdm
+shellcheck-py

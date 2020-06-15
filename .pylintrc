@@ -1,0 +1,24 @@
+[MASTER]
+
+# Add files or directories to the blacklist. They should be base names, not
+# paths.
+ignore=venv
+
+[BASIC]
+
+# Naming style matching correct argument names.
+argument-naming-style=snake_case
+
+# Good variable names which should always be accepted, separated by a comma
+good-names=i,j,k,ex,Run,_,x,y
+
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=120
+
+[MESSAGES CONTROL]
+
+# Only show warnings with the listed confidence levels. Leave empty to show
+# all. Valid levels: HIGH, INFERENCE, INFERENCE_FAILURE, UNDEFINED.
+confidence=HIGH

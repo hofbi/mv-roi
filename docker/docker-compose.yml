@@ -1,0 +1,10 @@
+version: '3'
+services:
+  bdda:
+    build: .
+    volumes:
+      - ../bdda:/tmp
+    working_dir: /tmp
+    ports:
+      - '8888:8888'
+    command: bash

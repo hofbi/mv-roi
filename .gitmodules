@@ -1,0 +1,3 @@
+[submodule "bdda/driver_attention_prediction"]
+	path = bdda/driver_attention_prediction
+	url = https://github.com/pascalxia/driver_attention_prediction.git
