@@ -45,7 +45,7 @@ Since our data are images, we skip the step of parsing videos into images in the
 
 ### Prepare
 
-To ensure the the correct naming conventions run the `prepare.py` script. This will copy all images with the right naming conventions to the `output_folder/camera_images`. If there are label json files they will be converted to gazemap images in `output_folder/gazemap_images`.
+To ensure the correct naming conventions run the `prepare.py` script. This will copy all images with the right naming conventions to the `output_folder/camera_images`. If there are label json files they will be converted to gazemap images in `output_folder/gazemap_images`.
 
 It will create a `naming.json` which is required for reformatting the data back to our naming conventions after running the BDD-A model. If a naming file is provided as optional argument the script will append to this file.
 
@@ -54,7 +54,7 @@ usage: prepare.py [-h] [-o OUTPUT_DIR] [-s SUFFIX]
                   [--image_topics IMAGE_TOPICS [IMAGE_TOPICS ...]] [-n NAMING]
                   input_dirs [input_dirs ...]
 
-Prepare the input data according to the bdda naming concentions
+Prepare the input data according to the bdda naming conventions
 
 positional arguments:
   input_dirs            Path to the directories with driving scenarios.
