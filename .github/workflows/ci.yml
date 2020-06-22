@@ -3,10 +3,8 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -22,3 +20,10 @@ jobs:
       run: make test
     - name: Check
       run: make check
+
+  super-lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Lint Code Base
+      uses: docker://github/super-linter:v2.1.0
