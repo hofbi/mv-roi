@@ -45,7 +45,7 @@ If you use MV-ROI please cite our paper.
 
 *Multi-View Region of Interest Prediction for Autonomous Driving Using Semi-Supervised Labeling, Markus Hofbauer, Christopher B. Kuhn, Jiaming Meng, Goran Petrovic, Eckehard Steinbach; ITSC 2020* [[PDF](https://www.researchgate.net/publication/342171521_Multi-View_Region_of_Interest_Prediction_for_Autonomous_Driving_Using_Semi-Supervised_Labeling)]
 
-```
+```tex
 @inproceedings{hofbauer_2020,
     title = {Multi-View Region of Interest Prediction for Autonomous Driving Using Semi-Supervised Labeling},
     booktitle = {23rd IEEE International Conference on Intelligent Transportation Systems (ITSC)},

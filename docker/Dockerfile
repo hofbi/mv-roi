@@ -1,7 +1,8 @@
 FROM tensorflow/tensorflow:1.5.0-gpu-py3
 
-RUN apt-get update && apt-get install -y \
-    ffmpeg
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install \
     numpy==1.16.1 \

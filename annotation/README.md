@@ -1,6 +1,6 @@
 # Annotation Framework
 
-The annotation framework can be used to generate pseudo labels from the model prediction and handle this data for manual human inspection. This includes merging and splitting images and finally convert them into the hdf5 file format. 
+The annotation framework can be used to generate pseudo labels from the model prediction and handle this data for manual human inspection. This includes merging and splitting images and finally convert them into the hdf5 file format.
 
 ## Naming Convention
 
@@ -80,7 +80,7 @@ Additionally, it provides the following 2 features.
 
 Run with `--reindex` to reindex the data using the correct [format](#naming-convention). It will delete frames that do not have an image for every view as we assume this means an identical timestamp. The other images will be shifted to a sequential indexing starting at `000000`.
 
-Images generated with the recording module are not aligned and need to be reindexed before further usage. 
+Images generated with the recording module are not aligned and need to be reindexed before further usage.
 
 ### HDF5
 
