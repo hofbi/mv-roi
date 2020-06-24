@@ -26,11 +26,11 @@ shellcheck:
 
 .PHONY: unit_test
 unit_test:
-	python3 testrunner.py
+	python3 -m unittest
 
 .PHONY: integration_test
 integration_test:
-	python3 testrunner.py --integration_tests
+	python3 -m unittest discover -p "*_test.py"
 
 ## Setup
 BDDA_PATH = bdda/driver_attention_prediction
