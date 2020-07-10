@@ -7,7 +7,7 @@ from tqdm import tqdm
 import PIL.Image
 
 try:
-    sys.path.append(Path(__file__).parent.parent)
+    sys.path.append(str(Path(__file__).absolute().parent.parent))
 except IndexError:
     pass
 
