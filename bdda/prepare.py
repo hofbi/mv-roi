@@ -168,7 +168,11 @@ def main():
         image_files = get_files_with_suffix(input_dir, args.suffix)
         json_files = get_files_with_suffix(input_dir, config.LABELME_SUFFIX)
         scenario_grouper = ScenarioGrouper(
-            scenario_index, input_dir.name, args.image_topics, image_files, json_files,
+            scenario_index,
+            input_dir.name,
+            args.image_topics,
+            image_files,
+            json_files,
         )
         if not image_files:
             print(

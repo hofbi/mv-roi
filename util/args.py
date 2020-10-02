@@ -61,12 +61,18 @@ class ArgumentParserFactory:
 
     def add_input_dir_argument(self, help_text):
         self.__parser.add_argument(
-            "input_dir", type=self.is_dir_path, help=help_text,
+            "input_dir",
+            type=self.is_dir_path,
+            help=help_text,
         )
 
     def add_output_dir_argument(self, help_text, default):
         self.__parser.add_argument(
-            "-o", "--output_dir", default=default, type=str, help=help_text,
+            "-o",
+            "--output_dir",
+            default=default,
+            type=str,
+            help=help_text,
         )
 
     def add_common_arguments(self):

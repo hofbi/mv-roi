@@ -35,7 +35,9 @@ class PrepareTest(unittest.TestCase):
         self.assertEqual(2, len(result))
         self.assertEqual({"10", "11"}, result.keys())
 
-    def test_append_naming_data__one_2_topics_and_existing_naming__6_elements(self,):
+    def test_append_naming_data__one_2_topics_and_existing_naming__6_elements(
+        self,
+    ):
         result = prepare.append_naming_data(
             [ScenarioGrouper(3, "test", ["front", "rear"], [])], self.TEST_NAMING.copy()
         )
@@ -58,7 +60,8 @@ class PrepareTest(unittest.TestCase):
         self, mock_method
     ):
         prepare.prepare_scenario_group_images(
-            self.TEST_GROUP_IMAGES, "output",
+            self.TEST_GROUP_IMAGES,
+            "output",
         )
 
         self.assertEqual(2, mock_method.call_count)
@@ -79,7 +82,9 @@ class PrepareTest(unittest.TestCase):
         self, open_mock_method
     ):
         prepare.prepare_scenario_group_gazemaps(
-            self.TEST_GROUP_IMAGES, (10, 20), "output_g",
+            self.TEST_GROUP_IMAGES,
+            (10, 20),
+            "output_g",
         )
 
         open_mock_method.assert_not_called()

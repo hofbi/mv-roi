@@ -39,7 +39,9 @@ class ReformatTest(unittest.TestCase):
         self.assertEqual(Path("10_00000.jpg"), path_pair.source)
         self.assertEqual(Path("test/front_left_000000.jpg"), path_pair.target)
 
-    def test_get_path_pair_gazemap_groups__four_groups__correct_groups(self,):
+    def test_get_path_pair_gazemap_groups__four_groups__correct_groups(
+        self,
+    ):
         result = get_path_pair_gazemap_groups(
             {"10": [], "11": [], "20": [], "21": []}, self.TEST_NAMING, ""
         )

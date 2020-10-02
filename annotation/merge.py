@@ -46,7 +46,9 @@ def parse_arguments():
         help="Number of images that are aligned next to each other",
     )
     parser.add_argument(
-        "--hdf5", action="store_true", help="Merge files into hdf5 file",
+        "--hdf5",
+        action="store_true",
+        help="Merge files into hdf5 file",
     )
     parser.add_argument(
         "--reindex",
@@ -105,7 +107,8 @@ def merge_frames(image_merge_groups, output_dir, image_suffix):
             file_path = merge_group.get_file_path_by_key(layout.key)
             # TODO resize to given resolution
             result.paste(
-                PIL.Image.open(file_path), layout.top_left,
+                PIL.Image.open(file_path),
+                layout.top_left,
             )
 
         result.save(Path(output_dir).joinpath("merged_%06i%s" % (index, image_suffix)))
@@ -172,7 +175,10 @@ def hdf5_merge(args, image_grouper, json_grouper):
     print("Creating HDF5 file %s" % h5_name)
     writer = HDF5Writer(h5_name)
     for index, merge_group in enumerate(
-        tqdm(image_grouper.merge_groups, desc="Adding images to hdf5 file...",)
+        tqdm(
+            image_grouper.merge_groups,
+            desc="Adding images to hdf5 file...",
+        )
     ):
         writer.add_image_group(index, merge_group)
     for index, merge_group in enumerate(

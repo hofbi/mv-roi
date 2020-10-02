@@ -26,7 +26,8 @@ def parse_arguments():
         help="Path to the hdf5 files.",
     )
     factory.add_output_dir_argument(
-        "Path to the output directory", Path(__file__).parent,
+        "Path to the output directory",
+        Path(__file__).parent,
     )
     return factory.parser.parse_args()
 
