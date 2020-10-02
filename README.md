@@ -1,6 +1,7 @@
 # MV-ROI: Multi-View ROI Prediction and Annotation
 
 [![Actions Status](https://github.com/hofbi/mv-roi/workflows/CI/badge.svg)](https://github.com/hofbi/mv-roi)
+[![Actions Status](https://github.com/hofbi/mv-roi/workflows/CodeQL/badge.svg)](https://github.com/hofbi/mv-roi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Installation
