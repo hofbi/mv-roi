@@ -104,19 +104,6 @@ class CreateROIConsistencyTest(TestCase):
             circle_list[3].centroid,
         )
 
-    def test_sync_rois_for_scene__two_camera__one_roi(self):
-        front = self.create_dict_with_shapes(
-            [self.create_shape((300, 150), (310, 150))]
-        )
-        left = self.create_dict_with_shapes([], "front_left_000093.png")
-        json_files = [front, left]
-        camera_orientation_list = [math.radians(0), math.radians(30)]
-        roi_view_list = create_roi_consistency.sync_rois_for_scene(
-            json_files, camera_orientation_list, 0.7, 90.0
-        )
-        self.assertEqual(Point(300, 150), roi_view_list[0][0].centroid)
-        self.assertAlmostEqual(124.0855101, roi_view_list[1][0].centroid.x)
-
     def test_sync_rois_for_scene__three_camera__one_roi(self):
         front = self.create_dict_with_shapes(
             [self.create_shape((300, 150), (310, 150))]

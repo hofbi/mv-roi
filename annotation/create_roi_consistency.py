@@ -4,7 +4,7 @@ import math
 from tqdm import tqdm
 import sys
 from pathlib import Path
-from typing import Dict
+from typing import List, Dict
 from configparser import ConfigParser
 import itertools
 
@@ -19,7 +19,6 @@ from util.geometry import Circle
 from util import config
 from util.camera import RoiView, RoiViewPair
 from annotation.generate_pseudo_label import get_shapes_from_roi_circles
-from typing import List, Dict
 
 
 def parse_arguments():
