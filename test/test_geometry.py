@@ -109,6 +109,21 @@ class CircleTest(unittest.TestCase):
 
         self.assertEqual([0, 0, 2, 2], unit.bounding_box)
 
+    def test_radius__left_radius_point(self):
+        unit = Circle((1, 1), (2, 1))
+
+        self.assertEqual(1, unit.radius)
+
+    def test_iou__one_case(self):
+        unit = Circle((1, 1), (2, 1))
+
+        self.assertEqual(1, unit.iou(Circle((1, 1), (2, 1))))
+
+    def test_iou__zero_case(self):
+        unit = Circle((1, 1), (2, 1))
+
+        self.assertEqual(0, unit.iou(Circle((10, 1), (12, 1))))
+
 
 if __name__ == "__main__":
     unittest.main()

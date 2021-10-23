@@ -3,12 +3,13 @@
 import json
 from pathlib import Path
 from tqdm import tqdm
+from typing import List
 
 import PIL.Image
 import h5py
 
 from util import config
-from util.files import read_json, write_json
+from util.files import write_json
 
 
 class HDF5Wrapper:
@@ -18,25 +19,25 @@ class HDF5Wrapper:
     IMAGE_KEY = "image"
     ROI_KEY = "roi"
 
-    def __init__(self, file_path, mode):
+    def __init__(self, file_path: Path, mode: str):
         self.__h5_file = h5py.File(file_path, mode)
 
     def __del__(self):
         self.__h5_file.close()
 
     @staticmethod
-    def get_or_create_group(root, key):
+    def get_or_create_group(root, key: str):
         if key in root:
             return root[key]
         else:
             return root.create_group(key)
 
     @staticmethod
-    def sample_key(index):
-        return "%s%06i" % (HDF5Wrapper.SAMPLE_KEY, index)
+    def sample_key(index: int) -> str:
+        return f"{HDF5Wrapper.SAMPLE_KEY}{index:06d}"
 
     @staticmethod
-    def index(sample_key):
+    def index(sample_key: str) -> int:
         return int(sample_key.lstrip(HDF5Wrapper.SAMPLE_KEY))
 
     @property
@@ -47,17 +48,17 @@ class HDF5Wrapper:
 class HDF5Writer:
     """HDF5 File Writer"""
 
-    def __init__(self, file_path):
+    def __init__(self, file_path: Path):
         self.__h5_file = HDF5Wrapper(file_path, "w")
 
-    def add_image_group(self, index, merge_group):
+    def add_image_group(self, index: int, merge_group):
         self.__add_merge_group(
             index, HDF5Wrapper.IMAGE_KEY, merge_group, PIL.Image.open
         )
 
-    def add_roi_group(self, index, merge_group):
-        def read_json_string(path):
-            return json.dumps(read_json(path))
+    def add_roi_group(self, index: int, merge_group):
+        def read_json_string(path: Path):
+            return path.read_text()
 
         self.__add_merge_group(
             index,
@@ -80,30 +81,28 @@ class HDF5Writer:
 class HDF5Extractor:
     """HDF5 File Extractor"""
 
-    def __init__(self, file_path):
+    def __init__(self, file_path: Path):
         self.__h5_file = HDF5Wrapper(file_path, "r")
 
-    def extract_data(self, output_dir):
-        output_path = Path(output_dir).joinpath(
-            Path(self.__h5_file.h5_file.filename).stem
-        )
+    def extract_data(self, output_dir: Path):
+        output_path = output_dir / Path(self.__h5_file.h5_file.filename).stem
         output_path.mkdir(parents=True, exist_ok=True)
         for sample in tqdm(self.__h5_file.h5_file.items()):
             index = HDF5Wrapper.index(sample[0])
             roi_data = self.get_roi_data(sample[1][HDF5Wrapper.ROI_KEY], index)
             for json_data, target in roi_data:
-                write_json(output_path.joinpath(target), json_data)
+                write_json(output_path / target, json_data)
             image_file_name = [json_data["imagePath"] for json_data, _ in roi_data]
             image_data = self.get_image_data(sample[1][HDF5Wrapper.IMAGE_KEY])
             for image, target in zip(image_data, image_file_name):
-                image.save(output_path.joinpath(target))
+                image.save(output_path / target)
 
     @staticmethod
-    def file_name(key, index, suffix):
+    def file_name(key: str, index: int, suffix: str) -> str:
         return config.MVROI_FILENAME_TEMPLATE % (key, index, suffix)
 
     @staticmethod
-    def get_image_data(data):
+    def get_image_data(data) -> List:
         image_data = []
         for key in data.keys():
             array = data[key][:]
@@ -112,13 +111,11 @@ class HDF5Extractor:
         return image_data
 
     @staticmethod
-    def get_roi_data(data, index):
-        json_data = []
-        for key in data.keys():
-            json_data.append(
-                (
-                    json.loads(data[key][()]),
-                    HDF5Extractor.file_name(key, index, config.LABELME_SUFFIX),
-                )
+    def get_roi_data(data, index: int) -> List:
+        return [
+            (
+                json.loads(data[key][()]),
+                HDF5Extractor.file_name(key, index, config.LABELME_SUFFIX),
             )
-        return json_data
+            for key in data.keys()
+        ]

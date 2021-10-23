@@ -11,7 +11,13 @@ import PIL.ImageChops
 import PIL.Image
 import h5py
 
-from annotation import merge, split, generate_pseudo_label, h5_extract
+from annotation import (
+    merge,
+    split,
+    generate_pseudo_label,
+    h5_extract,
+    create_roi_consistency,
+)
 from bdda import prepare, reformat_gaze_maps
 from util.files import get_files_with_suffix, read_json
 from util import config
@@ -64,6 +70,9 @@ class IntegrationTest(unittest.TestCase):
     PATH_PREPARED_IMAGES = PATH_PREPARED.joinpath("camera_images")
     PATH_PREPARED_GAZEMAPS = PATH_PREPARED.joinpath("gazemap_images")
     PATH_NAMING = PATH_PREPARED.joinpath(config.MVROI_NAMING_FILE)
+    PATH_CAMERA_CONFIG = RESOURCE_PATH.joinpath("camera_config")
+    PATH_CONSISTENT_IN = RESOURCE_PATH.joinpath("consistent_in")
+    PATH_CONSISTENT = RESOURCE_PATH.joinpath("consistent")
 
     def setUp(self) -> None:
         self.__message("Set Up")
@@ -116,7 +125,7 @@ class IntegrationTest(unittest.TestCase):
         actual = get_files_with_suffix(path_actual, ".h5")
 
         for exp, act in zip(expected, actual):
-            self.assertEqual(exp.stat().st_size, act.stat().st_size)
+            self.assertAlmostEqual(exp.stat().st_size, act.stat().st_size, delta=500)
             h5_exp = h5py.File(exp, "r")
             h5_act = h5py.File(act, "r")
             self.assertEqual(h5_exp["/"].name, h5_act["/"].name)
@@ -259,6 +268,25 @@ class IntegrationTest(unittest.TestCase):
         out_path = TEST_OUTPUT_PATH.joinpath("individual")
         self.__check_dir_content(PATH_INDIVIDUAL, out_path)
         self.__check_hdf5_content(PATH_INDIVIDUAL, out_path)
+
+    @patch(
+        "argparse.ArgumentParser.parse_args",
+        MagicMock(
+            return_value=argparse.Namespace(
+                input_dir=PATH_CONSISTENT_IN,
+                output_dir=TEST_OUTPUT_PATH,
+                camera_config=PATH_CAMERA_CONFIG.joinpath("6_camera_setup.ini"),
+                fov_degree=90,
+                iou_threshold=0.7,
+            )
+        ),
+    )
+    def test_create_roi_consistency__res_consistent__equal_to_res_consistent_gt(self):
+        create_roi_consistency.main()
+
+        out_path = TEST_OUTPUT_PATH.joinpath("consistent_in")
+        self.__check_dir_content(self.PATH_CONSISTENT, out_path)
+        self.__check_json_content(self.PATH_CONSISTENT, out_path)
 
 
 if __name__ == "__main__":

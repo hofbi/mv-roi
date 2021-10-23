@@ -86,7 +86,6 @@ try:
     from pygame.locals import K_UP
     from pygame.locals import K_a
     from pygame.locals import K_c
-    from pygame.locals import K_g
     from pygame.locals import K_d
     from pygame.locals import K_h
     from pygame.locals import K_m
@@ -103,7 +102,7 @@ except ImportError:
 
 def find_weather_presets():
     rgx = re.compile(".+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)")
-    name = lambda x: " ".join(m.group(0) for m in rgx.finditer(x))
+    name = lambda x: " ".join(m.group(0) for m in rgx.finditer(x))  # noqa: E731
     presets = [x for x in dir(carla.WeatherParameters) if re.match("[A-Z].+", x)]
     return [(getattr(carla.WeatherParameters, x), name(x)) for x in presets]
 
@@ -491,7 +490,7 @@ class HUD:
         ]
         if len(vehicles) > 1:
             self._info_text += ["Nearby vehicles:"]
-            distance = lambda l: math.sqrt(
+            distance = lambda l: math.sqrt(  # noqa: E731
                 (l.x - t.location.x) ** 2
                 + (l.y - t.location.y) ** 2
                 + (l.z - t.location.z) ** 2

@@ -37,13 +37,10 @@ def main():
     args = parse_arguments()
 
     for h5_file in args.h5_files:
-        extractor = HDF5Extractor(h5_file.name)
-        print("Extract data from %s into %s" % (h5_file.name, args.output_dir))
+        extractor = HDF5Extractor(Path(h5_file.name))
+        print(f"Extract data from {h5_file.name} into {args.output_dir}")
         extractor.extract_data(args.output_dir)
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+    main()

@@ -1,5 +1,6 @@
 black
 pylint
+flake8
 numpy
 opencv-python
 pillow
@@ -8,3 +9,5 @@ shapely
 scikit-image
 tqdm
 shellcheck-py
+coverage
+pyfakefs

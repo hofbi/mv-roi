@@ -33,7 +33,7 @@ def parse_arguments():
     factory = ArgumentParserFactory(__doc__)
     factory.parser.add_argument(
         "input_dirs",
-        type=ArgumentParserFactory.is_dir_path,
+        type=ArgumentParserFactory.dir_path,
         nargs="+",
         help="Path to the directories with driving scenarios.",
     )
@@ -79,10 +79,7 @@ def init_naming_data(naming_file_arg):
     :param naming_file_arg:
     :return:
     """
-    if naming_file_arg is None:
-        return {}
-    else:
-        return read_json(naming_file_arg)
+    return {} if naming_file_arg is None else read_json(Path(naming_file_arg))
 
 
 def get_scenario_start_index(naming_data):
@@ -162,7 +159,6 @@ def main():
 
     print("Reading scenarios...")
     scenario_index = get_scenario_start_index(naming_data)
-    num_previous_scenarios = scenario_index - 1
     scenario_groups = []
     for input_dir in input_dirs:
         image_files = get_files_with_suffix(input_dir, args.suffix)
