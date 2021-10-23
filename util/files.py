@@ -42,7 +42,7 @@ def read_json(file_path: Path) -> Dict:
 def write_json(file_path: Path, json_data: Dict) -> None:
     """
     Write json data to file
-    :param filename:
+    :param file_path:
     :param json_data:
     :return:
     """

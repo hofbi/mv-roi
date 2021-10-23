@@ -4,7 +4,7 @@ file_finder = find . -type f $(1) -not \( -path '*/venv/*' -o -path './bdda/driv
 PY_FILES = $(call file_finder,-name "*.py")
 SH_FILES = $(call file_finder,-name "*.sh")
 
-check: check_format pylint shellcheck flake8 check_sh_format
+check: check_format pylint shellcheck flake8 check_sh_format  # TODO add mypy
 
 test: unit_test integration_test
 
@@ -20,6 +20,9 @@ pylint:
 
 flake8:
 	$(PY_FILES) | xargs flake8
+
+mypy:
+	$(PY_FILES) | xargs mypy
 
 check_sh_format:
 	shfmt -d .

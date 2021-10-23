@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import argparse
-from typing import Any
+from typing import Any, Tuple
 
 
 def user_confirmation(message: str) -> bool:
@@ -17,14 +17,14 @@ def user_confirmation(message: str) -> bool:
     return answer == "y"
 
 
-def parse_resolution(resolution: str) -> (int, int):
+def parse_resolution(resolution: str) -> Tuple[int, int]:
     """
     Parse image resolution string
     :param resolution:
     :return:
     """
-    resolution = resolution.split("x")
-    return int(resolution[0]), int(resolution[1])
+    res = resolution.split("x")
+    return int(res[0]), int(res[1])
 
 
 class ArgumentParserFactory:

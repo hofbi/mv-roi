@@ -19,6 +19,7 @@ from util.geometry import Circle
 from util import config
 from util.camera import RoiView, RoiViewPair
 from annotation.generate_pseudo_label import get_shapes_from_roi_circles
+from typing import List, Dict
 
 
 def parse_arguments():
@@ -71,7 +72,7 @@ def read_camera_config(camera_config_path: Path) -> Dict:
     }
 
 
-def create_circle_list_from_json(jsonfile):
+def create_circle_list_from_json(jsonfile: Dict):
     """
     Extract the ROI information from json file and store it in the dictionary
     :return:
@@ -79,7 +80,12 @@ def create_circle_list_from_json(jsonfile):
     return [Circle.from_json(shape["points"]) for shape in jsonfile["shapes"]]
 
 
-def sync_rois_for_scene(json_files, camera_orientation_list, iou_threshold, fov_degree):
+def sync_rois_for_scene(
+    json_files: List[Dict],
+    camera_orientation_list: List[float],
+    iou_threshold: float,
+    fov_degree: float,
+):
     """Sync the ROIs for one scene"""
     image_width = json_files[0]["imageWidth"]
     roi_view_list = [
