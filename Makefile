@@ -4,7 +4,7 @@ file_finder = find . -type f $(1) -not \( -path '*/venv/*' -o -path './bdda/driv
 PY_FILES = $(call file_finder,-name "*.py")
 SH_FILES = $(call file_finder,-name "*.sh")
 
-check: check_format check_sh_format pylint shellcheck
+check: check_format pylint shellcheck flake8 check_sh_format  # TODO add mypy
 
 test: unit_test integration_test
 
@@ -17,6 +17,12 @@ check_format:
 
 pylint:
 	$(PY_FILES) | xargs pylint --rcfile=.pylintrc
+
+flake8:
+	$(PY_FILES) | xargs flake8
+
+mypy:
+	$(PY_FILES) | xargs mypy
 
 check_sh_format:
 	shfmt -d .
@@ -31,6 +37,15 @@ unit_test:
 .PHONY: integration_test
 integration_test:
 	python3 -m unittest discover -p "*_test.py"
+
+coverage:
+	coverage run --branch --omit=venv/*,test/* -m unittest
+	coverage run --branch --omit=venv/*,test/* --append -m unittest discover -p "*_test.py"
+	coverage report -m
+
+coverage_reports: coverage
+	coverage xml
+	coverage html
 
 ## Setup
 BDDA_PATH = bdda/driver_attention_prediction

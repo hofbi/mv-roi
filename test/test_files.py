@@ -1,10 +1,12 @@
 """Test files module"""
 
+from pyfakefs.fake_filesystem_unittest import TestCase
 import copy
 import json
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
+from typing import List
 
 from util.files import (
     MergeGroup,
@@ -20,13 +22,8 @@ TEST_LAYOUT_SINGLE = json.loads(
     """{"layout": [{"camera": "front", "location": {"y": 0, "x": 0, "width": 10, "height": 15}}]}"""
 )
 
-
-def get_ordered_file_list_with_one_leading_zero():
-    """
-    Get ordered file list one with leading zero
-    :return: String ordered list
-    """
-    file_list = [
+ORDERED_FILE_LIST_WITH_ONE_LEADING_ZERO = sorted(
+    [
         "a_00",
         "a_01",
         "a_02",
@@ -39,11 +36,10 @@ def get_ordered_file_list_with_one_leading_zero():
         "a_09",
         "a_010",
     ]
-    file_list.sort()
-    return file_list
+)
 
 
-class FilesTest(unittest.TestCase):
+class FilesTest(TestCase):
     """Files test"""
 
     TEST_DIR_CONTENT = [
@@ -60,43 +56,45 @@ class FilesTest(unittest.TestCase):
         "layout.json",
     ]
 
-    @patch("os.listdir", MagicMock(return_value=[]))
+    def setUp(self) -> None:
+        self.setUpPyfakefs()
+
+    def __create_test_files(self, root: Path, files: List[str]):
+        self.fs.create_dir(root)
+        for file in files:
+            self.fs.create_file(root / file)
+
     def test_get_files_with_suffix__empty_dir__no_files(self):
-        result = get_files_with_suffix("", ".png")
+        result = get_files_with_suffix(Path(""), ".png")
         self.assertFalse(result)
 
-    @patch("os.listdir", MagicMock(return_value=TEST_DIR_CONTENT))
     def test_get_files_with_suffix__not_existing_suffix__no_files(self):
-        result = get_files_with_suffix("", ".jpg")
+        self.__create_test_files(Path("test"), self.TEST_DIR_CONTENT)
+        result = get_files_with_suffix(Path("test"), ".jpg")
         self.assertFalse(result)
 
-    @patch("os.listdir", MagicMock(return_value=TEST_DIR_CONTENT))
     def test_get_files_with_suffix__json_suffix__two_files(self):
-        result = get_files_with_suffix("", ".json")
-        self.assertEqual(2, len(result))
-        self.assertEqual(Path("."), Path(result[0]).parent)
-
-    @patch("os.listdir", MagicMock(return_value=TEST_DIR_CONTENT))
-    def test_get_files_with_suffix__input_path__start_with_input_path(self):
-        result = get_files_with_suffix("test", ".json")
+        self.__create_test_files(Path("test"), self.TEST_DIR_CONTENT)
+        result = get_files_with_suffix(Path("test"), ".json")
         self.assertEqual(2, len(result))
         self.assertEqual(Path("test"), Path(result[0]).parent)
 
-    @patch("os.listdir", MagicMock(return_value=MULTI_NAME_TEST_CONTENT))
     def test_get_files_with_suffix__input_path__ascending_order(self):
-        result = get_files_with_suffix("", ".json")
-        expected = [Path(element) for element in sorted(self.MULTI_NAME_TEST_CONTENT)]
-        self.assertEqual(len(expected), len(result))
-        self.assertEqual(expected, result)
+        self.__create_test_files(Path("test"), self.MULTI_NAME_TEST_CONTENT)
+        result = get_files_with_suffix(Path("test"), ".json")
+        expected = [
+            Path("test") / element for element in sorted(self.MULTI_NAME_TEST_CONTENT)
+        ]
+        self.assertListEqual(expected, result)
 
-    @patch("os.listdir", MagicMock(return_value=["layout.json"]))
     def test_get_files_with_suffix__only_layout_json__one_file(self):
-        result = get_files_with_suffix("", ".json")
+        self.__create_test_files(Path("test"), ["layout.json"])
+        result = get_files_with_suffix(Path("test"), ".json")
         self.assertEqual(1, len(result))
 
-    @patch("os.listdir", MagicMock(return_value=["layout.json"]))
     def test_get_files_with_suffix__only_layout_json_but_ignored__no_files(self):
-        result = get_files_with_suffix("", ".json", ignore="layout.json")
+        self.__create_test_files(Path("test"), ["layout.json"])
+        result = get_files_with_suffix(Path("test"), ".json", ignore="test/layout.json")
         self.assertFalse(result)
 
 
@@ -233,8 +231,9 @@ class FileReindexerTest(unittest.TestCase):
     def test_group_files_by_index__file_order_with_one_leading_zeros__ordered_by_file_index(
         self,
     ):
-        file_list = get_ordered_file_list_with_one_leading_zero()
-        result = list(FileReindexer.group_files_by_index(file_list))
+        result = list(
+            FileReindexer.group_files_by_index(ORDERED_FILE_LIST_WITH_ONE_LEADING_ZERO)
+        )
         self.assertTrue(all(result[i] <= result[i + 1] for i in range(len(result) - 1)))
 
     def test_filter_files_for_reindexing__no_files__empty(self):
@@ -358,8 +357,9 @@ class FileGrouperTest(unittest.TestCase):
     def test_group_files_by_keys__file_order_with_one_leading_zeros__ordered_by_file_index(
         self,
     ):
-        file_list = get_ordered_file_list_with_one_leading_zero()
-        result = FileGrouper.group_files_by_keys(file_list, ["a"])
+        result = FileGrouper.group_files_by_keys(
+            ORDERED_FILE_LIST_WITH_ONE_LEADING_ZERO, ["a"]
+        )
         self.assertTrue(FileGrouper.is_consecutive(result))
 
     def test_group_files_by_keys__keys_and_files_not_matching__empty_six_keys_dict(

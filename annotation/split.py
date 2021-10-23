@@ -4,6 +4,7 @@ import copy
 import sys
 from pathlib import Path
 from tqdm import tqdm
+from typing import Dict, List
 
 try:
     sys.path.append(str(Path(__file__).absolute().parent.parent))
@@ -63,7 +64,7 @@ def split_images(images_files, layout, output_dir):
             )
 
 
-def split_json_data(json_files, layout, image_suffix):
+def split_json_data(json_files: List[Path], layout: Dict, image_suffix: str) -> List:
     """
     Split json data into individuals according to the provided layout
     :param json_files:
@@ -79,13 +80,13 @@ def split_json_data(json_files, layout, image_suffix):
             layout_model = ImageLayoutModel(image_segment)
             segment_data = crop_from_json(json_data, layout_model)
             file_name = json_file_model.get_file_name_with_view_key(layout_model.key)
-            segment_data["imagePath"] = Path(file_name).stem + image_suffix
+            segment_data["imagePath"] = Path(file_name).with_suffix(image_suffix).name
             files_to_save.append((file_name, segment_data))
 
     return files_to_save
 
 
-def crop_from_json(json_data, layout_model):
+def crop_from_json(json_data: Dict, layout_model: ImageLayoutModel) -> Dict:
     """
     Crop label coordinates from json according to layout model
     :param json_data:
@@ -107,7 +108,8 @@ def main():
     """Main"""
     args = parse_arguments()
 
-    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    output_dir = args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     image_files = get_files_with_suffix(args.input_dir, args.suffix)
     json_files = get_files_with_suffix(args.input_dir, config.LABELME_SUFFIX)
@@ -118,27 +120,24 @@ def main():
     ]
     if not layout_json:
         print(
-            "Input folder does not contain a %s file." % config.MVROI_LAYOUT_FILE,
+            f"Input folder does not contain a {config.MVROI_LAYOUT_FILE} file.",
             file=sys.stderr,
         )
         sys.exit(1)
 
     print(
-        "Found %d %s images and %d label files in %s\n"
-        % (len(image_files), args.suffix, len(json_files), args.input_dir)
+        f"Found {len(image_files)} {args.suffix} images and {len(json_files)} "
+        f"label files in {args.input_dir}\n"
     )
 
     layout_data = read_json(layout_json[0])
 
     if args.split_images:
-        split_images(image_files, layout_data, args.output_dir)
+        split_images(image_files, layout_data, output_dir)
     individual_json_files = split_json_data(json_files, layout_data, args.suffix)
     for path, data in tqdm(individual_json_files, desc="Writing json files..."):
-        write_json(Path(args.output_dir).joinpath(path), data)
+        write_json(output_dir / path, data)
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+    main()

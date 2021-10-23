@@ -36,7 +36,8 @@ def parse_arguments():
     factory.add_common_arguments()
     factory.add_resolution_argument()
     factory.add_image_topics_argument(
-        "All image topics that should be should be merged together. The order defines the layout of merging.",
+        "All image topics that should be should be merged together. "
+        "The order defines the layout of merging.",
     )
     parser = factory.parser
     parser.add_argument(
@@ -111,7 +112,7 @@ def merge_frames(image_merge_groups, output_dir, image_suffix):
                 layout.top_left,
             )
 
-        result.save(Path(output_dir).joinpath("merged_%06i%s" % (index, image_suffix)))
+        result.save(Path(output_dir) / f"merged_{index:06d}{image_suffix}")
 
 
 def merge_json_data(json_merge_groups, image_suffix):
@@ -132,7 +133,7 @@ def merge_json_data(json_merge_groups, image_suffix):
         merged_json["imageHeight"] = json_merge_group.height
         merged_json["imageWidth"] = json_merge_group.width
         merged_json["shapes"] = []
-        merged_json["imagePath"] = "merged_%06i%s" % (index, image_suffix)
+        merged_json["imagePath"] = f"merged_{index:06d}{image_suffix}"
         for layout in json_merge_group.image_layouts:
             file_path = json_merge_group.get_file_path_by_key(layout.key)
             json_data = read_json(file_path)
@@ -144,23 +145,21 @@ def merge_json_data(json_merge_groups, image_suffix):
     return merged_json_data
 
 
-def file_merge(args, image_grouper, json_grouper, image_suffix):
+def file_merge(output_dir: Path, image_grouper, json_grouper, image_suffix):
     """
     Merge individual image and json files into files
-    :param args:
+    :param output_dir:
     :param image_grouper:
     :param json_grouper:
     :param image_suffix:
     :return:
     """
-    merge_frames(image_grouper.merge_groups, args.output_dir, image_suffix)
+    merge_frames(image_grouper.merge_groups, output_dir, image_suffix)
     merged_json_data = merge_json_data(json_grouper.merge_groups, image_suffix)
     for index, merged_data in enumerate(
-        tqdm(merged_json_data, desc="Writing merged jsons files...")
+        tqdm(merged_json_data, desc="Writing merged json files...")
     ):
-        write_json(
-            Path(args.output_dir).joinpath("merged_%06i.json" % index), merged_data
-        )
+        write_json(output_dir.joinpath(f"merged_{index:06d}.json"), merged_data)
 
 
 def hdf5_merge(args, image_grouper, json_grouper):
@@ -171,8 +170,8 @@ def hdf5_merge(args, image_grouper, json_grouper):
     :param json_grouper:
     :return:
     """
-    h5_name = Path(args.output_dir).joinpath(Path(args.input_dir).name + ".h5")
-    print("Creating HDF5 file %s" % h5_name)
+    h5_name = args.output_dir.joinpath(Path(args.input_dir).with_suffix(".h5").name)
+    print(f"Creating HDF5 file {h5_name}")
     writer = HDF5Writer(h5_name)
     for index, merge_group in enumerate(
         tqdm(
@@ -196,13 +195,12 @@ def reindex_files(image_files, image_topics):
     """
     image_reindexer = FileReindexer(image_files, image_topics)
     if user_confirmation(
-        "%d/%d samples will be removed"
-        % (len(image_reindexer.files_to_remove), len(image_files))
+        f"{len(image_reindexer.files_to_remove)}/{len(image_files)} samples will be removed"
     ):
         image_reindexer.clean_up()
     if user_confirmation(
-        "%d/%d samples with %d topics will be reindexed"
-        % (len(image_reindexer.files_to_reindex), len(image_files), len(image_topics))
+        f"{len(image_reindexer.files_to_remove)}/{len(image_files)} samples with "
+        f"{len(image_topics)} topics will be reindexed"
     ):
         image_reindexer.reindex()
 
@@ -212,24 +210,24 @@ def main():
     args = parse_arguments()
     width, height = parse_resolution(args.res)
 
-    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    input_dir = args.input_dir
+    output_dir = args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     layout_data = create_layout_data(
         args.image_topics, args.images_per_row, width, height
     )
     if not (args.hdf5 or args.reindex):
-        print("Write layout.json")
-        write_json(
-            Path(args.output_dir).joinpath(config.MVROI_LAYOUT_FILE), layout_data
-        )
+        print(f"Write {config.MVROI_LAYOUT_FILE}")
+        write_json(output_dir.joinpath(config.MVROI_LAYOUT_FILE), layout_data)
 
-    image_files = get_files_with_suffix(args.input_dir, args.suffix)
+    image_files = get_files_with_suffix(input_dir, args.suffix)
     json_files = get_files_with_suffix(
-        args.input_dir, ".json", ignore=config.MVROI_LAYOUT_FILE
+        input_dir, ".json", ignore=config.MVROI_LAYOUT_FILE
     )
     print(
-        "Found %d %s images and %d label files in %s\n"
-        % (len(image_files), args.suffix, len(json_files), args.input_dir)
+        f"Found {len(image_files)} {args.suffix} images and {len(json_files)} "
+        f"label files in {input_dir}\n"
     )
 
     if args.reindex:
@@ -242,25 +240,22 @@ def main():
     json_grouper = FileGrouper(layout_data, json_files, args.image_topics)
     if not (image_grouper.is_valid and json_grouper.is_valid):
         print(
-            "Image or json files not aligned or of same length for topics %s.\n"
-            "Run with --reindex to align your files" % args.image_topics,
+            "Image or json files not aligned or of same length for topics "
+            f"{args.image_topics}.\nRun with --reindex to align your files",
             file=sys.stderr,
         )
         sys.exit(1)
 
     print(
-        "Found %d image and %d json groups to merge\n"
-        % (len(image_grouper.merge_groups), len(json_grouper.merge_groups))
+        f"Found {len(image_grouper.merge_groups)} image and "
+        f"{len(json_grouper.merge_groups)} json groups to merge\n"
     )
 
     if args.hdf5:
         hdf5_merge(args, image_grouper, json_grouper)
     else:
-        file_merge(args, image_grouper, json_grouper, args.suffix)
+        file_merge(args.output_dir, image_grouper, json_grouper, args.suffix)
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+    main()

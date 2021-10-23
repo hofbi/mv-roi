@@ -1,6 +1,10 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   test:
@@ -26,4 +30,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Lint Code Base
-      uses: docker://github/super-linter:v2.1.0
+      uses: docker://github/super-linter:v4.8.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VALIDATE_PYTHON_FLAKE8: false  # Already in check
+        VALIDATE_PYTHON_PYLINT: false  # Already in check
+        VALIDATE_PYTHON_ISORT: false
+        VALIDATE_PYTHON_MYPY: false
+        VALIDATE_DOCKERFILE_HADOLINT: false

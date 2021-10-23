@@ -33,6 +33,7 @@ General workflow of the annotation framework.
 1. **Model Prediction:** Generate ROI predictions for the data using the [finetuned model](bdda#prediction).
 1. **Reformat Data:** Reformat the data from bdda naming conventions to ours to be used in the further pipeline with the [reformat](bdda#reformat) module.
 1. **Pseudo Label Generation:** [Generate](annotation#generate-pseudo-label) json labels from model predictions.
+1. **Create Consistent ROI Labels:** [Create](annotation#create-roi-consistency) consistent ROI json labels over all views.
 1. **Merge Samples:** [Merge](annotation#merge) all camera views of a sample
 1. **Human Inspection:** Use the tool [labelme](https://github.com/wkentaro/labelme) to manually inspect and manipulate the labels
 1. **Split Samples:** [Split](annotation#split) all camera views of a sample

@@ -153,12 +153,12 @@ def main():
     args = parse_arguments()
     width, height = parse_resolution(args.res)
 
-    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    output_dir = args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     heatmap_files = get_files_with_suffix(args.input_dir, config.BDDA_IMAGE_SUFFIX)
     print(
-        "Found %d %s heatmap files in %s\n"
-        % (len(heatmap_files), config.BDDA_IMAGE_SUFFIX, args.input_dir)
+        f"Found {len(heatmap_files)} {config.BDDA_IMAGE_SUFFIX} heatmap files in {args.input_dir}\n"
     )
 
     print("Creating pseudo labels from heatmaps...")
@@ -167,11 +167,8 @@ def main():
     )
 
     for path, data in tqdm(label_json_files, desc="Writing label json files..."):
-        write_json(Path(args.output_dir).joinpath(path), data)
+        write_json(output_dir / path, data)
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+    main()

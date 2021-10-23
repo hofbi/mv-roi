@@ -36,6 +36,31 @@ optional arguments:
                         width (default: 0.05)
 ```
 
+## Create ROI Consistency
+
+The model cannot ensure to detect all ROIs consistently for all views.
+To simplify the labeling process, use this module which syncs the ROI for all views based on a given camera layout
+
+```shell
+usage: create_roi_consistency.py [-h] [-o OUTPUT_DIR] [-c CAMERA_CONFIG] [-f FOV_DEGREE] [-i IOU_THRESHOLD] input_dir
+
+Create ROI consistent label json files for multiple views
+
+positional arguments:
+  input_dir             Path to the directory which contains the images and labels in json format.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT_DIR, --output_dir OUTPUT_DIR
+                        Path to the directory where the roi consistent label files will be put. (default: _out)
+  -c CAMERA_CONFIG, --camera-config CAMERA_CONFIG
+                        Path to the camera config file that contains the camera positions (default: record/config/6_camera_setup.ini)
+  -f FOV_DEGREE, --fov-degree FOV_DEGREE
+                        Field of camera view in degree (default: 90.0)
+  -i IOU_THRESHOLD, --iou-threshold IOU_THRESHOLD
+                        IOU threshold to adjust if a new ROI circle need to be added (default: 0.7)
+```
+
 ## Merge
 
 The merge module can be used to combine individual frames and label files into a merged frame, to inspect all camera views at the same time. It provides the following CLI interface.

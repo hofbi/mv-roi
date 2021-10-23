@@ -1,7 +1,7 @@
 """Prepare Data Test"""
 
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import patch, MagicMock
 
 import PIL.Image
 
@@ -49,7 +49,7 @@ class PrepareTest(unittest.TestCase):
         result = prepare.init_naming_data(None)
         self.assertFalse(result)
 
-    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("pathlib.Path.read_text")
     @patch("json.loads", MagicMock())
     def test_init_naming_data__with_naming__read_json_called(self, mock_method):
         prepare.init_naming_data("naming.json")
@@ -76,7 +76,7 @@ class PrepareTest(unittest.TestCase):
 
         mock_method.assert_not_called()
 
-    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("pathlib.Path.read_text")
     @patch("json.loads", MagicMock())
     def test_prepare_scenario_group_gazemaps__2_topics_and_image_files_only__open_never_called(
         self, open_mock_method
@@ -89,7 +89,7 @@ class PrepareTest(unittest.TestCase):
 
         open_mock_method.assert_not_called()
 
-    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("pathlib.Path.read_text")
     @patch("json.loads", MagicMock())
     @patch.object(PIL.Image.Image, "save")
     def test_prepare_scenario_group_gazemaps__2_topics_and_label_files__open_called_twice(
@@ -154,7 +154,8 @@ class PrepareTest(unittest.TestCase):
         )
 
         self.assertEqual(255, result.getpixel((26, 26)))
-        self.assertEqual(255, result.getpixel((49, 49)))
+        self.assertEqual(255, result.getpixel((49, 50)))
+        self.assertEqual(0, result.getpixel((49, 49)))
 
 
 if __name__ == "__main__":

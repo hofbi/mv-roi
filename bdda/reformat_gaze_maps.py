@@ -76,7 +76,7 @@ def main():
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
     print("Reading %s..." % config.MVROI_NAMING_FILE)
-    naming_data = read_json(args.naming.name)
+    naming_data = read_json(Path(args.naming.name))
 
     gazemaps = get_files_with_suffix(args.input_dir, args.suffix)
     gazemap_groups = FileGrouper.group_files_by_keys(gazemaps, naming_data.keys())

@@ -1,7 +1,7 @@
 """Test merge module"""
 
 import unittest
-from unittest.mock import mock_open, patch, MagicMock
+from unittest.mock import patch, MagicMock
 
 import json
 import copy
@@ -65,26 +65,26 @@ class MergeImagesTest(unittest.TestCase):
         result = merge.merge_json_data([], self.TEST_SUFFIX)
         self.assertFalse(result)
 
-    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("pathlib.Path.read_text", MagicMock())
     @patch("json.loads", MagicMock())
-    def test_merge_json__two_elements__size_2(self, _):
+    def test_merge_json__two_elements__size_2(self):
         result = merge.merge_json_data(
             [self.TEST_MERGE_GROUP, self.TEST_MERGE_GROUP], self.TEST_SUFFIX
         )
         self.assertEqual(2, len(result))
 
-    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("pathlib.Path.read_text", MagicMock())
     @patch("json.loads", MagicMock())
-    def test_merge_json__one_element__correct_header(self, _):
+    def test_merge_json__one_element__correct_header(self):
         result = merge.merge_json_data([self.TEST_MERGE_GROUP], self.TEST_SUFFIX)[0]
 
         self.assertEqual(10, int(result["imageWidth"]))
         self.assertEqual(5, int(result["imageHeight"]))
         self.assertEqual("merged_000000.png", result["imagePath"])
 
-    @patch("builtins.open", new_callable=mock_open, read_data="data")
+    @patch("pathlib.Path.read_text", MagicMock())
     @patch("json.loads", MagicMock(return_value=copy.deepcopy(TEST_SHAPES)))
-    def test_merge_json__one_element__correct_shape_num(self, _):
+    def test_merge_json__one_element__correct_shape_num(self):
         result = merge.merge_json_data([self.TEST_MERGE_GROUP], self.TEST_SUFFIX)[0]
         self.assertEqual(6, len(result["shapes"]))
 

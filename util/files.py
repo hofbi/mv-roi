@@ -3,16 +3,18 @@
 import json
 import re
 from pathlib import Path
-import os
 from collections import namedtuple
 from tqdm import tqdm
 from util import config
+from typing import Dict, List
 
 
 PathPair = namedtuple("PathPair", ["source", "target"])
 
 
-def get_files_with_suffix(input_dir, suffix, ignore=r"(?!x)x"):
+def get_files_with_suffix(
+    input_dir: Path, suffix: str, ignore: str = r"(?!x)x"
+) -> List[Path]:
     """
     Get absolute files paths from input dir matching the suffix
     :param input_dir:
@@ -21,41 +23,36 @@ def get_files_with_suffix(input_dir, suffix, ignore=r"(?!x)x"):
     Never match regex from: https://stackoverflow.com/a/1845097/3883569
     :return:
     """
-    path_list = os.listdir(input_dir)
-    path_list.sort()
-    files = [
-        Path(input_dir).joinpath(file_path)
-        for file_path in path_list
-        if file_path.endswith(suffix) and not re.compile(ignore).match(str(file_path))
+    return [
+        file_path
+        for file_path in sorted(input_dir.rglob(f"*{suffix}"))
+        if not re.compile(ignore).match(str(file_path))
     ]
-    return files
 
 
-def read_json(filename):
+def read_json(file_path: Path) -> Dict:
     """
     Read json data from file
-    :param filename:
+    :param file_path:
     :return:
     """
-    with open(filename) as json_file:
-        return json.load(json_file)
+    return json.loads(file_path.read_text())
 
 
-def write_json(filename, json_data):
+def write_json(file_path: Path, json_data: Dict) -> None:
     """
     Write json data to file
-    :param filename:
+    :param file_path:
     :param json_data:
     :return:
     """
-    with open(filename, "w") as outfile:
-        json.dump(json_data, outfile)
+    file_path.write_text(json.dumps(json_data))
 
 
 class FileModel:
     """File Model"""
 
-    def __init__(self, file_path):
+    def __init__(self, file_path: Path):
         self.__file_path = Path(file_path)
         try:
             name_split = re.split(r"([_\-]\d+)", self.__file_path.name)
@@ -68,15 +65,15 @@ class FileModel:
         return self.file_index < other.file_index
 
     @property
-    def file_path(self):
+    def file_path(self) -> Path:
         return self.__file_path
 
     @property
-    def topic_name(self):
+    def topic_name(self) -> str:
         return self.__topic_name
 
     @property
-    def file_index(self):
+    def file_index(self) -> int:
         return self.__index
 
     def get_file_name_with_sequence_index(self, sequence_index, target_suffix=None):
@@ -213,7 +210,7 @@ class FileReindexer:
         return self.__files_to_remove
 
     @staticmethod
-    def filter_files_for_reindexing(file_groups: {FileModel}, keys):
+    def filter_files_for_reindexing(file_groups: Dict, keys):
         files_to_reindex = []
         files_to_remove = []
         for val in file_groups.values():
