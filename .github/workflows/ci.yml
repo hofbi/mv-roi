@@ -35,6 +35,7 @@ jobs:
       uses: docker://github/super-linter:v4.8.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VALIDATE_PYTHON_BLACK: false  # Already in check
         VALIDATE_PYTHON_FLAKE8: false  # Already in check
         VALIDATE_PYTHON_PYLINT: false  # Already in check
         VALIDATE_PYTHON_ISORT: false
