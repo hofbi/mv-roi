@@ -1,12 +1,14 @@
 """Create ROI Constitency Test"""
 
-from pyfakefs.fake_filesystem_unittest import TestCase
+import math
 import unittest
 from pathlib import Path
-import math
-from annotation import create_roi_consistency
+from typing import Dict, List, Tuple
+
+from pyfakefs.fake_filesystem_unittest import TestCase
 from shapely.geometry import Point
-from typing import List, Dict, Tuple
+
+from annotation import create_roi_consistency
 
 
 class CreateROIConsistencyTest(TestCase):

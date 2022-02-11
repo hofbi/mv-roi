@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, patch
 
 import PIL.Image
 
-from util.h5 import HDF5Extractor, HDF5Wrapper
 from util import config
+from util.h5 import HDF5Extractor, HDF5Wrapper
 
 
 class HDF5WrapperTest(unittest.TestCase):

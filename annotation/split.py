@@ -3,8 +3,9 @@
 import copy
 import sys
 from pathlib import Path
-from tqdm import tqdm
 from typing import Dict, List
+
+from tqdm import tqdm
 
 try:
     sys.path.append(str(Path(__file__).absolute().parent.parent))
@@ -13,16 +14,16 @@ except IndexError:
 
 import PIL.Image
 
+from util import config
 from util.args import ArgumentParserFactory
 from util.files import (
-    get_files_with_suffix,
-    ImageLayoutModel,
     FileModel,
+    ImageLayoutModel,
+    get_files_with_suffix,
     read_json,
     write_json,
 )
 from util.geometry import is_shape_inside, shift_label_points
-from util import config
 
 
 def parse_arguments():

@@ -3,6 +3,7 @@
 import copy
 import sys
 from pathlib import Path
+
 from tqdm import tqdm
 
 try:
@@ -10,18 +11,14 @@ try:
 except IndexError:
     pass
 
-import PIL.Image
 import numpy as np
+import PIL.Image
 import skimage.measure
 
-from util.args import (
-    ArgumentParserFactory,
-    parse_resolution,
-)
+from util import config
+from util.args import ArgumentParserFactory, parse_resolution
 from util.files import get_files_with_suffix, write_json
 from util.geometry import Circle
-from util import config
-
 
 JSON_FILE_TEMPLATE = {
     "version": config.LABELME_VERSION,

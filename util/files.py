@@ -2,12 +2,13 @@
 
 import json
 import re
-from pathlib import Path
 from collections import namedtuple
-from tqdm import tqdm
-from util import config
+from pathlib import Path
 from typing import Dict, List
 
+from tqdm import tqdm
+
+from util import config
 
 PathPair = namedtuple("PathPair", ["source", "target"])
 
@@ -214,7 +215,7 @@ class FileReindexer:
         files_to_reindex = []
         files_to_remove = []
         for val in file_groups.values():
-            if set(file.topic_name for file in val) == set(keys):
+            if {file.topic_name for file in val} == set(keys):
                 files_to_reindex.append(val)
             else:
                 files_to_remove.append(val)

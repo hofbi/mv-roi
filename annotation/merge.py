@@ -3,6 +3,7 @@
 import copy
 import sys
 from pathlib import Path
+
 from tqdm import tqdm
 
 try:
@@ -12,18 +13,18 @@ except IndexError:
 
 import PIL.Image
 
+from util import config
 from util.args import ArgumentParserFactory, parse_resolution, user_confirmation
 from util.files import (
     FileGrouper,
-    get_files_with_suffix,
-    ImageLayoutModel,
     FileReindexer,
+    ImageLayoutModel,
+    get_files_with_suffix,
     read_json,
     write_json,
 )
-from util.h5 import HDF5Writer
 from util.geometry import shift_label_points
-from util import config
+from util.h5 import HDF5Writer
 
 
 def parse_arguments():

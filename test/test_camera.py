@@ -1,11 +1,12 @@
 """Camera module test"""
 
+import math
 import unittest
 
-import math
-from util.geometry import Circle
 from shapely.geometry import Point
+
 from util.camera import RegionOverlap, RoiView, RoiViewPair
+from util.geometry import Circle
 
 
 class RegionOverlapTest(unittest.TestCase):

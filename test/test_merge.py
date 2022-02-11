@@ -1,13 +1,12 @@
 """Test merge module"""
 
-import unittest
-from unittest.mock import patch, MagicMock
-
-import json
 import copy
+import json
+import unittest
+from unittest.mock import MagicMock, patch
 
 from annotation import merge
-from util.files import MergeGroup, FileModel
+from util.files import FileModel, MergeGroup
 
 
 class MergeImagesTest(unittest.TestCase):

@@ -1,8 +1,9 @@
 """Geometric Operations"""
 
-from shapely.geometry import Point
+from typing import Dict, List, Tuple
+
 import shapely.affinity
-from typing import Tuple, Dict, List
+from shapely.geometry import Point
 
 from util.files import ImageLayoutModel
 

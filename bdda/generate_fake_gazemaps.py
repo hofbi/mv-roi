@@ -2,19 +2,19 @@
 
 import sys
 from pathlib import Path
-from tqdm import tqdm
 
 import PIL.Image
+from tqdm import tqdm
 
 try:
     sys.path.append(str(Path(__file__).absolute().parent.parent))
 except IndexError:
     pass
 
+from bdda.prepare import create_gazemap_from_shapes
+from util import config
 from util.args import ArgumentParserFactory
 from util.files import get_files_with_suffix
-from util import config
-from bdda.prepare import create_gazemap_from_shapes
 
 
 def generate_fake_gazemaps(image_file, output_dir):

@@ -1,10 +1,9 @@
 """Split Images Test"""
 
-import unittest
-from unittest.mock import patch, MagicMock
-
 import json
+import unittest
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 from annotation import split
 

@@ -1,21 +1,22 @@
 """Test files module"""
 
-from pyfakefs.fake_filesystem_unittest import TestCase
 import copy
 import json
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 from typing import List
+from unittest.mock import patch
+
+from pyfakefs.fake_filesystem_unittest import TestCase
 
 from util.files import (
-    MergeGroup,
     FileGrouper,
     FileModel,
-    ImageLayoutModel,
-    get_files_with_suffix,
     FileReindexer,
+    ImageLayoutModel,
+    MergeGroup,
     ScenarioGrouper,
+    get_files_with_suffix,
 )
 
 TEST_LAYOUT_SINGLE = json.loads(

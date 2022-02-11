@@ -1,8 +1,7 @@
 """Shapes Test"""
 
-import unittest
-
 import copy
+import unittest
 
 from util import geometry
 from util.files import ImageLayoutModel

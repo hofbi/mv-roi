@@ -1,8 +1,9 @@
 """Camera related operations"""
 
-import math
 import copy
+import math
 from typing import List
+
 from util.geometry import Circle
 
 

@@ -43,7 +43,6 @@ Use ARROWS or WASD keys for control.
     ESC          : quit
 """
 
-from __future__ import print_function
 
 import os
 import sys
@@ -54,8 +53,6 @@ try:
 except IndexError:
     pass
 
-import carla
-
 import argparse
 import collections
 import datetime
@@ -64,38 +61,43 @@ import math
 import random
 import re
 import weakref
+
+import carla
+
 from record.sensor_setup import CameraManager
 
 try:
     import pygame
-    from pygame.locals import KMOD_CTRL
-    from pygame.locals import KMOD_SHIFT
-    from pygame.locals import K_0
-    from pygame.locals import K_9
-    from pygame.locals import K_BACKSPACE
-    from pygame.locals import K_COMMA
-    from pygame.locals import K_DOWN
-    from pygame.locals import K_ESCAPE
-    from pygame.locals import K_F1
-    from pygame.locals import K_LEFT
-    from pygame.locals import K_PERIOD
-    from pygame.locals import K_RIGHT
-    from pygame.locals import K_SLASH
-    from pygame.locals import K_SPACE
-    from pygame.locals import K_TAB
-    from pygame.locals import K_UP
-    from pygame.locals import K_a
-    from pygame.locals import K_c
-    from pygame.locals import K_d
-    from pygame.locals import K_h
-    from pygame.locals import K_m
-    from pygame.locals import K_p
-    from pygame.locals import K_q
-    from pygame.locals import K_r
-    from pygame.locals import K_s
-    from pygame.locals import K_w
-    from pygame.locals import K_MINUS
-    from pygame.locals import K_EQUALS
+    from pygame.locals import (
+        K_0,
+        K_9,
+        K_BACKSPACE,
+        K_COMMA,
+        K_DOWN,
+        K_EQUALS,
+        K_ESCAPE,
+        K_F1,
+        K_LEFT,
+        K_MINUS,
+        K_PERIOD,
+        K_RIGHT,
+        K_SLASH,
+        K_SPACE,
+        K_TAB,
+        K_UP,
+        KMOD_CTRL,
+        KMOD_SHIFT,
+        K_a,
+        K_c,
+        K_d,
+        K_h,
+        K_m,
+        K_p,
+        K_q,
+        K_r,
+        K_s,
+        K_w,
+    )
 except ImportError:
     raise RuntimeError("cannot import pygame, make sure pygame package is installed")
 
@@ -109,7 +111,7 @@ def find_weather_presets():
 
 def get_actor_display_name(actor, truncate=250):
     name = " ".join(actor.type_id.replace("_", ".").title().split(".")[1:])
-    return (name[: truncate - 1] + u"\u2026") if len(name) > truncate else name
+    return (name[: truncate - 1] + "\u2026") if len(name) > truncate else name
 
 
 class World:
@@ -119,7 +121,7 @@ class World:
         try:
             self.map = self.world.get_map()
         except RuntimeError as error:
-            print("RuntimeError: {}".format(error))
+            print(f"RuntimeError: {error}")
             print("  The server could not send the OpenDRIVE (.xodr) file:")
             print(
                 "  Make sure it exists, has the same name of your town, and is correct."
@@ -459,13 +461,13 @@ class HUD:
             "Simulation time: % 12s"
             % datetime.timedelta(seconds=int(self.simulation_time)),
             "",
-            "Speed:   % 15.0f km/h" % (3.6 * math.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2)),
-            u"Compass:% 17.0f\N{DEGREE SIGN} % 2s" % (compass, heading),
+            "Speed:   % 15.0f km/h" % (3.6 * math.sqrt(v.x**2 + v.y**2 + v.z**2)),
+            "Compass:% 17.0f\N{DEGREE SIGN} % 2s" % (compass, heading),
             "Accelero: (%5.1f,%5.1f,%5.1f)" % world.imu_sensor.accelerometer,
             "Gyroscop: (%5.1f,%5.1f,%5.1f)" % world.imu_sensor.gyroscope,
-            "Location:% 20s" % ("(% 5.1f, % 5.1f)" % (t.location.x, t.location.y)),
+            "Location:% 20s" % (f"({t.location.x: 5.1f}, {t.location.y: 5.1f})"),
             "GNSS:% 24s"
-            % ("(% 2.6f, % 3.6f)" % (world.gnss_sensor.lat, world.gnss_sensor.lon)),
+            % (f"({world.gnss_sensor.lat: 2.6f}, {world.gnss_sensor.lon: 3.6f})"),
             "Height:  % 18.0f m" % t.location.z,
             "",
         ]
@@ -643,7 +645,7 @@ class CollisionSensor:
         actor_type = get_actor_display_name(event.other_actor)
         self.hud.notification("Collision with %r" % actor_type)
         impulse = event.normal_impulse
-        intensity = math.sqrt(impulse.x ** 2 + impulse.y ** 2 + impulse.z ** 2)
+        intensity = math.sqrt(impulse.x**2 + impulse.y**2 + impulse.z**2)
         self.history.append((event.frame, intensity))
         if len(self.history) > 4000:
             self.history.pop(0)
@@ -669,7 +671,7 @@ class LaneInvasionSensor:
         self = weak_self()
         if not self:
             return
-        lane_types = set(x.type for x in event.crossed_lane_markings)
+        lane_types = {x.type for x in event.crossed_lane_markings}
         text = ["%r" % str(x).split()[-1] for x in lane_types]
         self.hud.notification("Crossed line %s" % " and ".join(text))
 
@@ -835,7 +837,7 @@ def main():
     )
     args = argparser.parse_args()
 
-    args.width, args.height = [int(x) for x in args.res.split("x")]
+    args.width, args.height = (int(x) for x in args.res.split("x"))
 
     log_level = logging.DEBUG if args.debug else logging.INFO
     logging.basicConfig(format="%(levelname)s: %(message)s", level=log_level)

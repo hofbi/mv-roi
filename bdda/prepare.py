@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 from tqdm import tqdm
 
 try:
@@ -12,16 +13,16 @@ except IndexError:
 import PIL.Image
 import PIL.ImageDraw
 
+from util import config
 from util.args import ArgumentParserFactory
 from util.files import (
+    FileGrouper,
     ScenarioGrouper,
     get_files_with_suffix,
     read_json,
-    FileGrouper,
     write_json,
 )
 from util.geometry import Circle
-from util import config
 
 
 def parse_arguments():

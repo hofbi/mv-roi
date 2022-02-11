@@ -1,26 +1,26 @@
 """Integration Test"""
 
+import argparse
+import os
+import shutil
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from pathlib import Path
-import argparse
-import shutil
-import os
-import PIL.ImageChops
-import PIL.Image
 import h5py
+import PIL.Image
+import PIL.ImageChops
 
 from annotation import (
-    merge,
-    split,
+    create_roi_consistency,
     generate_pseudo_label,
     h5_extract,
-    create_roi_consistency,
+    merge,
+    split,
 )
 from bdda import prepare, reformat_gaze_maps
-from util.files import get_files_with_suffix, read_json
 from util import config
+from util.files import get_files_with_suffix, read_json
 
 RESOURCE_PATH = Path(__file__).parent.joinpath("resources")
 TEST_OUTPUT_PATH = RESOURCE_PATH.joinpath("output")
@@ -85,7 +85,7 @@ class IntegrationTest(unittest.TestCase):
 
     def __message(self, message):
         print("\n==========================================")
-        print("%s: %s" % (message, self.id()))
+        print(f"{message}: {self.id()}")
         print("==========================================\n")
 
     def __check_dir_content(self, path_expected, path_actual):

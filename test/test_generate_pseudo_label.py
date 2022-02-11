@@ -1,8 +1,7 @@
 """Generate Pseudo Label Test"""
 import unittest
-from unittest.mock import MagicMock, patch
-
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 from annotation import generate_pseudo_label
 from util.geometry import Circle

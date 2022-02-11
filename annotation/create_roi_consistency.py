@@ -1,24 +1,25 @@
 """Create ROI consistent label json files for multiple views"""
 
-import math
-from tqdm import tqdm
-import sys
-from pathlib import Path
-from typing import List, Dict
-from configparser import ConfigParser
 import itertools
+import math
+import sys
+from configparser import ConfigParser
+from pathlib import Path
+from typing import Dict, List
+
+from tqdm import tqdm
 
 try:
     sys.path.append(str(Path(__file__).absolute().parent.parent))
 except IndexError:
     pass
 
-from util.args import ArgumentParserFactory
-from util.files import get_files_with_suffix, read_json, write_json, FileReindexer
-from util.geometry import Circle
-from util import config
-from util.camera import RoiView, RoiViewPair
 from annotation.generate_pseudo_label import get_shapes_from_roi_circles
+from util import config
+from util.args import ArgumentParserFactory
+from util.camera import RoiView, RoiViewPair
+from util.files import FileReindexer, get_files_with_suffix, read_json, write_json
+from util.geometry import Circle
 
 
 def parse_arguments():

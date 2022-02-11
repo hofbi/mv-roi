@@ -1,6 +1,4 @@
-black
-pylint
-flake8
+pre-commit
 numpy
 opencv-python
 pillow
@@ -8,7 +6,5 @@ h5py
 shapely
 scikit-image
 tqdm
-shellcheck-py
 coverage
 pyfakefs
-mypy

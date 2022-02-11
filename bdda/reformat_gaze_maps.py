@@ -1,9 +1,10 @@
 """Reformat the predicted gaze maps into the pipeline naming convention"""
 
-import shutil
-from pathlib import Path
-import sys
 import argparse
+import shutil
+import sys
+from pathlib import Path
+
 from tqdm import tqdm
 
 try:
@@ -11,9 +12,9 @@ try:
 except IndexError:
     pass
 
-from util.args import ArgumentParserFactory
-from util.files import read_json, get_files_with_suffix, FileGrouper, PathPair
 from util import config
+from util.args import ArgumentParserFactory
+from util.files import FileGrouper, PathPair, get_files_with_suffix, read_json
 
 
 def parse_arguments():

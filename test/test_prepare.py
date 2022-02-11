@@ -1,13 +1,13 @@
 """Prepare Data Test"""
 
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import PIL.Image
 
 from bdda import prepare
-from util.files import ScenarioGrouper
 from util import config
+from util.files import ScenarioGrouper
 
 
 class PrepareTest(unittest.TestCase):

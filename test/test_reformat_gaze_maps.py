@@ -1,9 +1,8 @@
 """Reformat Gaze Maps Test"""
 
 import unittest
-from unittest.mock import patch
-
 from pathlib import Path
+from unittest.mock import patch
 
 from bdda.reformat_gaze_maps import (
     get_path_pair_gazemap_groups,

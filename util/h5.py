@@ -2,11 +2,11 @@
 
 import json
 from pathlib import Path
-from tqdm import tqdm
 from typing import List
 
-import PIL.Image
 import h5py
+import PIL.Image
+from tqdm import tqdm
 
 from util import config
 from util.files import write_json

@@ -1,7 +1,7 @@
 """Argparse common functions and helpers"""
 
-from pathlib import Path
 import argparse
+from pathlib import Path
 from typing import Any, Tuple
 
 
