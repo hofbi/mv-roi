@@ -10,13 +10,17 @@ from carla import ColorConverter as cc
 
 try:
     import pygame
-except ImportError:
-    raise RuntimeError("cannot import pygame, make sure pygame package is installed")
+except ImportError as exc:
+    raise RuntimeError(
+        "cannot import pygame, make sure pygame package is installed"
+    ) from exc
 
 try:
     import numpy as np
-except ImportError:
-    raise RuntimeError("cannot import numpy, make sure numpy package is installed")
+except ImportError as exc:
+    raise RuntimeError(
+        "cannot import numpy, make sure numpy package is installed"
+    ) from exc
 
 
 class CameraManager:

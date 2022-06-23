@@ -59,8 +59,10 @@ class FileModel:
             name_split = re.split(r"([_\-]\d+)", self.__file_path.name)
             self.__topic_name = name_split[0]
             self.__index = int(name_split[1][1:])
-        except IndexError:
-            raise ValueError("Invalid Filename format -> Should be KEY_INDEX.SUFFIX")
+        except IndexError as exc:
+            raise ValueError(
+                "Invalid Filename format -> Should be KEY_INDEX.SUFFIX"
+            ) from exc
 
     def __lt__(self, other):
         return self.file_index < other.file_index
